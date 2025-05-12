@@ -1,0 +1,128 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Todo List</title>
+
+    <style>
+        body {
+            font-family: arial;
+        }
+        
+        .name {
+            width: 150px;
+            height: 20px;
+        }
+        
+        input {
+            padding: 10px 20px;
+            border: 1px solid gray;
+            margin: 5px;
+        }
+        
+        .name {
+            font-size: 20px;
+        }
+        
+        span {
+            margin-left: 15px;
+            margin-top: 18px;
+        }
+        
+        .add {
+            border: none;
+            padding: 12px 25px;
+            background-color: lightgreen;
+        }
+        
+        .delete {
+            border: none;
+            padding: 12px 25px;
+            background-color: lightcoral;
+            margin: 5px;
+        }
+    </style>
+</head>
+
+<body>
+    <h2>Todo List</h2>
+    <input class="js-name name" type="text" placeholder="Enter you'r Todo Task">
+    <input class="js-time" type="time">
+    <input class="js-date" type="date">
+
+    <button class="js-add add">ADD</button>
+
+    <div class="js-showList list"></div>
+
+    <script>
+        const toodList = JSON.parse(localStorage.getItem('list')) || [{
+            name: 'Watch movie',
+            date: '18-02-2025',
+            time: '17:30'
+        }, {
+            name: 'Make Dinner',
+            date: '18-02-2025',
+            time: '19:15'
+        }];
+
+        renderTodoObjects();
+
+        document.querySelector('.js-add').addEventListener('click', () => {
+            addTodo();
+        });
+
+        function addTodo() {
+            const inputName = document.querySelector('.js-name')
+            const name = inputName.value
+
+            const inputDate = document.querySelector('.js-date')
+            const date = inputDate.value
+
+            const inputTime = document.querySelector('.js-time')
+            const time = inputTime.value
+
+            toodList.push({
+                name: name,
+                date: date,
+                time: time
+            })
+
+            inputName.value = '';
+
+            localStorage.setItem('list', JSON.stringify(toodList))
+
+            renderTodoObjects();
+        }
+        document.body.addEventListener('keydown', (event) => {
+            if (event.key === 'Enter') {
+                addTodo();
+            }
+        })
+
+        function renderTodoObjects() {
+            let todoListHtml = '';
+
+            toodList.forEach((todo, index) => {
+                const html = `
+            <div>
+                <span>${todo.name}</span>
+                <span>${todo.date}</span>
+                <span>${todo.time}</span>
+                <button onclick="toodList.splice(${index}, 1); renderTodoObjects();" class="delete">Delete</button>
+            </div>
+          `;
+                todoListHtml += html;
+                // it gives the index values
+                console.log(index)
+            });
+
+            localStorage.setItem('list', JSON.stringify(toodList))
+
+            document.querySelector('.js-showList').innerHTML = todoListHtml;
+        }
+    </script>
+</body>
+
+</html>
